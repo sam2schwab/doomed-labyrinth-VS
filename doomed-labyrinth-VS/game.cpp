@@ -153,7 +153,8 @@ void Game::manageEvents()
 		manageMenuEvents();
 		break;
 	case Game::InGame:
-		manageFPGAEvents();
+		if (fpga.estOk())
+			manageFPGAEvents();
 		manageKeysEvents();
 		break;
 	case Game::Victory:
