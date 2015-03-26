@@ -83,7 +83,6 @@
     <ClInclude Include="animatedsprite.h" />
     <ClInclude Include="animation.h" />
     <ClInclude Include="game.h" />
-    <ClInclude Include="main.h" />
     <ClInclude Include="maze.h" />
     <ClInclude Include="player.h" />
   </ItemGroup>

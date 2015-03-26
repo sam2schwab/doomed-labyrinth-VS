@@ -13,7 +13,13 @@ Maze::Maze(sf::RenderWindow &_window)
 
 Maze::~Maze()
 {
-
+	for each (auto tab in spriteArray)
+	{
+		for each (auto sprite in tab)
+		{
+			delete sprite;
+		}
+	}
 }
 
 bool Maze::getVictory()
@@ -61,8 +67,9 @@ void Maze::move(int int_dir)
             temp = currentPos + dir;
             test90 = currentPos + sf::Vector2i(dir.y,dir.x);
             test270 = currentPos + sf::Vector2i(-dir.y,-dir.x);
-            if(spriteArray[test90.x][test90.y]->getTexture() == &pathTexture ||
-               spriteArray[test270.x][test270.y]->getTexture() == &pathTexture)
+            if(spriteArray[test90.x][test90.y]->getTexture() != &wallTexture ||
+               spriteArray[test270.x][test270.y]->getTexture() != &wallTexture ||
+			   (currentPos == chestPos && chest.getTexture() == &closedChestTexture))
                 break;
         }
     }
@@ -72,21 +79,26 @@ void Maze::move(int int_dir)
 
 void Maze::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    for(int colonne = 0; colonne < width*2+1; colonne++)
+	for each (auto tab in spriteArray)
     {
-        for(int ligne = 0; ligne < height*2+1; ligne++)
+		for each (auto sprite in tab)
         {
-            target.draw(*spriteArray[colonne][ligne], states);
+            target.draw(*sprite, states);
         }
     }
+	target.draw(chest);
 }
 
-void Maze::initialize(int _width,int _height, sf::Texture _wall, sf::Texture _path)
+void Maze::initialize(int _width,int _height, sf::Texture _wall, sf::Texture _path, sf::Texture _openChest, sf::Texture _closedChest, sf::Texture _door)
 {
     width = _width;
     height = _height;
+	doorPos = sf::Vector2i(rand()%(width)*2+1,height * 2);
     wallTexture = _wall;
     pathTexture = _path;
+	openChestTexture = _openChest;
+	closedChestTexture = _closedChest;
+	doorTexture = _door;
     CELL = width*height;
 
     srand((unsigned)time(NULL));
@@ -97,10 +109,29 @@ void Maze::initialize(int _width,int _height, sf::Texture _wall, sf::Texture _pa
     backtrack_x[index] = 1;
     backtrack_y[index] = 1;
     maze_generator(index, backtrack_x, backtrack_y, 1, 1, 1);
+
+	initializeChest();
+
     currentPos = sf::Vector2i(1,0);
 
 	delete[] backtrack_x;
 	delete[] backtrack_y;
+}
+
+void Maze::initializeChest()
+{
+	do {
+		chestPos.x = rand() % (width * 2);
+		chestPos.y = rand() % (height * 2);
+	} while (!(spriteArray[chestPos.x][chestPos.y]->getTexture() == &pathTexture && 
+		(int(spriteArray[chestPos.x + 1][chestPos.y]->getTexture() == &wallTexture) +
+		 int(spriteArray[chestPos.x - 1][chestPos.y]->getTexture() == &wallTexture) +
+		 int(spriteArray[chestPos.x][chestPos.y + 1]->getTexture() == &wallTexture) +
+		 int(spriteArray[chestPos.x][chestPos.y - 1]->getTexture() == &wallTexture)) == 3));
+	chest.setTexture(closedChestTexture);
+	chest.setScale(SCALE, SCALE);
+	chest.setPosition(spriteArray[chestPos.x][chestPos.y]->getPosition().x + pathTexture.getSize().x / 2 * SCALE - closedChestTexture.getSize().x / 2 * SCALE,
+		spriteArray[chestPos.x][chestPos.y]->getPosition().y + pathTexture.getSize().y / 2 * SCALE - closedChestTexture.getSize().y / 2 * SCALE);
 }
 
 void Maze::init_array()
@@ -206,7 +237,7 @@ void Maze::maze_generator(int index, int backtrack_x[], int backtrack_y[], int x
     }
     //generer entree et sortie -- temporairement hardcode
     spriteArray[1][0]->setTexture(pathTexture);
-    spriteArray[width*2-1][height*2]->setTexture(pathTexture);
+    spriteArray[doorPos.x][doorPos.y]->setTexture(doorTexture);
 }
 
 int Maze::is_closed(int x, int y)
@@ -236,6 +267,8 @@ void Maze::update(sf::Time deltaTime)
                                                              spriteArray[colonne][ligne]->getPosition().y - SPEED*SCALE*dir.y);
                 }
             }
+			chest.setPosition(chest.getPosition().x - SPEED*SCALE*dir.x,
+				chest.getPosition().y - SPEED*SCALE*dir.y);
         }
         else if (int((spriteArray[currentPos.x][currentPos.y]->getPosition().x + wallTexture.getSize().x*SCALE*0.5) - window->getSize().x/2) == 0 &&
                  int((spriteArray[currentPos.x][currentPos.y]->getPosition().y + wallTexture.getSize().y*SCALE*0.5) - window->getSize().y/2) == 0)
@@ -244,6 +277,11 @@ void Maze::update(sf::Time deltaTime)
             isMoving = false;
 			if (currentPos.y + 1 >= height*2+1)
 				isVictory = true;
+			if (currentPos == chestPos && chest.getTexture() == &closedChestTexture)
+				chest.setTexture(openChestTexture);
+			if (currentPos + sf::Vector2i(0, 1) == doorPos && chest.getTexture() == &openChestTexture)
+				spriteArray[doorPos.x][doorPos.y]->setTexture(pathTexture);
+
         }
         else
         {
@@ -257,6 +295,8 @@ void Maze::update(sf::Time deltaTime)
                                                              spriteArray[colonne][ligne]->getPosition().y - y_offset);
                 }
             }
+			chest.setPosition(chest.getPosition().x - x_offset,
+				chest.getPosition().y - y_offset);
         }
     }
 }

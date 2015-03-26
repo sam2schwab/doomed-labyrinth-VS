@@ -34,6 +34,10 @@ private:
     sf::Texture wallTexture;
     sf::Texture pathTexture;
     Maze maze;
+	//members for chest
+	sf::Texture chestOpen;
+	sf::Texture chestClosed;
+	sf::Texture door;
 
     //members for player
     sf::Texture playerTexture;

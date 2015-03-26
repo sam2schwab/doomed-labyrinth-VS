@@ -1,4 +1,4 @@
-﻿Build started 2015-03-19 10:04:45 AM.
+﻿Build started 2015-03-25 11:07:13 PM.
      1>Project "C:\Users\Samuel\Documents\S2\doomed-labyrinth-VS\doomed-labyrinth-VS\doomed-labyrinth-VS.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Users\Samuel\Documents\S2\doomed-labyrinth-VS\\SFML-2.2\include" /I"C:\Users\Samuel\Documents\S2\doomed-labyrinth-VS\\CommFPGA" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt game.cpp
@@ -16,4 +16,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.14
+Time Elapsed 00:00:01.02

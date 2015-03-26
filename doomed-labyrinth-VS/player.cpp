@@ -1,6 +1,6 @@
 #include "player.h"
 
-const float Player::SCALE = 1;
+const float Player::SCALE = 0.7;
 
 Player::Player(sf::RenderWindow &_window,sf::Time frameTime)
     : AnimatedSprite(frameTime,true,true),
@@ -14,23 +14,30 @@ Player::~Player()
 
 }
 
+void Player::changeCharacter(int index)
+{
+	playerIndex = index;
+	move(direction);
+}
+
 void Player::move(int int_dir)
 {
+	direction = int_dir;
     if(!*isMoving)
     {
         switch(int_dir)
         {
         case UP:
-            setAnimation(walkingAnimationUp);
+            setAnimation(walkingAnimationUp[playerIndex]);
             break;
         case DOWN:
-            setAnimation(walkingAnimationDown);
+			setAnimation(walkingAnimationDown[playerIndex]);
             break;
         case LEFT:
-            setAnimation(walkingAnimationLeft);
+			setAnimation(walkingAnimationLeft[playerIndex]);
             break;
         case RIGHT:
-            setAnimation(walkingAnimationRight);
+			setAnimation(walkingAnimationRight[playerIndex]);
             break;
         }
     }
@@ -47,37 +54,44 @@ void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const
     AnimatedSprite::draw(target,states);
 }
 
-void Player::initialize(sf::Texture _spriteSheet, bool* moving)
+void Player::initialize(sf::Texture _spriteSheet, bool* moving, int _playerIndex)
 {
+	direction = DOWN;
+	playerIndex = _playerIndex;
     isMoving = moving;
     spriteSheet = _spriteSheet;
 
-    walkingAnimationDown.setSpriteSheet(spriteSheet);
-    walkingAnimationDown.addFrame(sf::IntRect(32, 0, 32, 32));
-    walkingAnimationDown.addFrame(sf::IntRect(64, 0, 32, 32));
-    walkingAnimationDown.addFrame(sf::IntRect(32, 0, 32, 32));
-    walkingAnimationDown.addFrame(sf::IntRect( 0, 0, 32, 32));
+	for (int i = 0; i < NB_CHARACTERS; i++)
+	{
+		int x = i % 3;
+		int y = i < 3 ? 0 : 1;
+		walkingAnimationDown[i].setSpriteSheet(spriteSheet);
+		walkingAnimationDown[i].addFrame(sf::IntRect(0 + x * 128, 0 + y * 192, 32, 48)); //left, top, width, height
+		walkingAnimationDown[i].addFrame(sf::IntRect(32 + x * 128, 0 + y * 192, 32, 48));
+		walkingAnimationDown[i].addFrame(sf::IntRect(64 + x * 128, 0 + y * 192, 32, 48));
+		walkingAnimationDown[i].addFrame(sf::IntRect(96 + x * 128, 0 + y * 192, 32, 48));
 
-    walkingAnimationLeft.setSpriteSheet(spriteSheet);
-    walkingAnimationLeft.addFrame(sf::IntRect(32, 32, 32, 32));
-    walkingAnimationLeft.addFrame(sf::IntRect(64, 32, 32, 32));
-    walkingAnimationLeft.addFrame(sf::IntRect(32, 32, 32, 32));
-    walkingAnimationLeft.addFrame(sf::IntRect( 0, 32, 32, 32));
+		walkingAnimationLeft[i].setSpriteSheet(spriteSheet);
+		walkingAnimationLeft[i].addFrame(sf::IntRect(0 + x * 128, 48 + y * 192, 32, 48));
+		walkingAnimationLeft[i].addFrame(sf::IntRect(32 + x * 128, 48 + y * 192, 32, 48));
+		walkingAnimationLeft[i].addFrame(sf::IntRect(64 + x * 128, 48 + y * 192, 32, 48));
+		walkingAnimationLeft[i].addFrame(sf::IntRect(96 + x * 128, 48 + y * 192, 32, 48));
 
-    walkingAnimationRight.setSpriteSheet(spriteSheet);
-    walkingAnimationRight.addFrame(sf::IntRect(32, 64, 32, 32));
-    walkingAnimationRight.addFrame(sf::IntRect(64, 64, 32, 32));
-    walkingAnimationRight.addFrame(sf::IntRect(32, 64, 32, 32));
-    walkingAnimationRight.addFrame(sf::IntRect( 0, 64, 32, 32));
+		walkingAnimationRight[i].setSpriteSheet(spriteSheet);
+		walkingAnimationRight[i].addFrame(sf::IntRect(0 + x * 128, 96 + y * 192, 32, 48));
+		walkingAnimationRight[i].addFrame(sf::IntRect(32 + x * 128, 96 + y * 192, 32, 48));
+		walkingAnimationRight[i].addFrame(sf::IntRect(64 + x * 128, 96 + y * 192, 32, 48));
+		walkingAnimationRight[i].addFrame(sf::IntRect(96 + x * 128, 96 + y * 192, 32, 48));
 
-    walkingAnimationUp.setSpriteSheet(spriteSheet);
-    walkingAnimationUp.addFrame(sf::IntRect(32, 96, 32, 32));
-    walkingAnimationUp.addFrame(sf::IntRect(64, 96, 32, 32));
-    walkingAnimationUp.addFrame(sf::IntRect(32, 96, 32, 32));
-    walkingAnimationUp.addFrame(sf::IntRect( 0, 96, 32, 32));
+		walkingAnimationUp[i].setSpriteSheet(spriteSheet);
+		walkingAnimationUp[i].addFrame(sf::IntRect(0 + x * 128, 144 + y * 192, 32, 48));
+		walkingAnimationUp[i].addFrame(sf::IntRect(32 + x * 128, 144 + y * 192, 32, 48));
+		walkingAnimationUp[i].addFrame(sf::IntRect(64 + x * 128, 144 + y * 192, 32, 48));
+		walkingAnimationUp[i].addFrame(sf::IntRect(96 + x * 128, 144 + y * 192, 32, 48));
+	}
 
-    setAnimation(walkingAnimationDown);
+	setAnimation(walkingAnimationDown[playerIndex]);
 
-    setPosition(window->getSize().x/2 - 16*SCALE, window->getSize().y/2 - 16*SCALE);
+    setPosition(window->getSize().x/2 - 16*SCALE, window->getSize().y/2 - 24*SCALE);
     setScale(SCALE,SCALE);
 }

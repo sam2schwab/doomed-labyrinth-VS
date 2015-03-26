@@ -9,7 +9,7 @@ public:
     Maze(sf::RenderWindow &_window);
     ~Maze();
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-    void initialize(int width,int height, sf::Texture wall, sf::Texture path);
+	void initialize(int width, int height, sf::Texture _wall, sf::Texture _path, sf::Texture _openChest, sf::Texture _closedChest, sf::Texture _door);
     void update(sf::Time deltaTime);
     void move(int int_dir);
     bool* getMoving();
@@ -31,6 +31,7 @@ private:
     bool isMoving;
     sf::Vector2i dir;
     sf::Vector2i currentPos;
+	sf::Vector2i doorPos;
     std::vector<std::vector<sf::Sprite*> > spriteArray;
     sf::RenderWindow * window;
     int width;
@@ -38,6 +39,14 @@ private:
     int CELL;
     sf::Texture pathTexture;
     sf::Texture wallTexture;
+
+	//members for chests
+	sf::Texture openChestTexture;
+	sf::Texture closedChestTexture;
+	sf::Texture doorTexture;
+	sf::Sprite chest;
+	sf::Vector2i chestPos;
+	void initializeChest();
 };
 
 #endif // MAZE_H

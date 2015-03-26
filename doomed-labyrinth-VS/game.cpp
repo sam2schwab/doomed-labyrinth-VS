@@ -3,8 +3,8 @@
 #include <iostream>
 
 Game::Game()
-	: screenDimensions(1920, 1080),
-	window(sf::VideoMode(screenDimensions.x, screenDimensions.y), "Doomed Labyrinth of Doom", sf::Style::Fullscreen),
+	: screenDimensions(800, 600),
+	window(sf::VideoMode(screenDimensions.x, screenDimensions.y), "Doomed Labyrinth of Doom"/*, sf::Style::Fullscreen*/),
 	maze(window),
 	player(window, sf::seconds(0.2)),
 	backgroundColor(sf::Color::Black)
@@ -48,9 +48,16 @@ void Game::loadContent()
     wallTexture.setSmooth(true);
     pathTexture.loadFromFile("path.png");
     pathTexture.setSmooth(true);
+	//ressources for chest
+	chestOpen.loadFromFile("chest_open.png");
+	chestOpen.setSmooth(true);
+	chestClosed.loadFromFile("chest_closed.png");
+	chestClosed.setSmooth(true);
+	door.loadFromFile("door.png");
+	door.setSmooth(true);
 
     //ressources for player
-    playerTexture.loadFromFile("player.png");
+    playerTexture.loadFromFile("spritesheet.png");
     playerTexture.setSmooth(true);
 
     //ressources for audio
@@ -68,13 +75,13 @@ void Game::initialize()
     //Create game components here
 
     //initializing labyrinth
-    maze.initialize(10,5 ,wallTexture,pathTexture);
+    maze.initialize(5,7 ,wallTexture,pathTexture,chestOpen,chestClosed,door);
 
     //initializing player
     player.initialize(playerTexture, maze.getMoving());
 
     //initializing audio
-    music.play();
+    //music.play();
 
 	//initializing victory
 	victoryMessage.setString("Victoire!");
@@ -227,6 +234,30 @@ void Game::manageKeysEvents()
 		{
 			player.move(Player::LEFT);
 			maze.move(Maze::LEFT);
+		}
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num1)
+		{
+			player.changeCharacter(0);
+		}
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num2)
+		{
+			player.changeCharacter(1);
+		}
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num3)
+		{
+			player.changeCharacter(2);
+		}
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num4)
+		{
+			player.changeCharacter(3);
+		}
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num5)
+		{
+			player.changeCharacter(4);
+		}
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num6)
+		{
+			player.changeCharacter(5);
 		}
 	}
 }
