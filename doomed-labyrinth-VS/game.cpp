@@ -60,7 +60,7 @@ void Game::loadContent()
 	victoryFont.loadFromFile("showg.ttf");
 
 	//ressources for menu
-	menuFont.loadFromFile("arial.ttf");
+	menuFont.loadFromFile("Barbarian2.ttf");
 }
 
 void Game::initialize()
@@ -85,12 +85,30 @@ void Game::initialize()
 		window.getSize().y / 3 - victoryMessage.getLocalBounds().height / 2);
 
 	//initializing menu
-	menuMessage.setString("Appuyez sur une touche\n"
-		                  "      pour commencer");
-	menuMessage.setFont(menuFont);
-	menuMessage.setCharacterSize(50);
-	menuMessage.setPosition(window.getSize().x / 2 - menuMessage.getLocalBounds().width / 2,
-		window.getSize().y / 3 - menuMessage.getLocalBounds().height / 2);
+	//Spaces are there for a reason
+	menuMessagePlay.setString(" Jouer");
+	menuMessageOptions.setString("Options"); 
+	menuMessageExit.setString("  Quitter");
+		//Set fonts
+	menuMessagePlay.setFont(menuFont);
+	menuMessageOptions.setFont(menuFont);
+	menuMessageExit.setFont(menuFont);
+
+		//Set size
+	menuMessagePlay.setCharacterSize(50);
+	menuMessageOptions.setCharacterSize(50);
+	menuMessageExit.setCharacterSize(50);
+		//set position
+	menuMessagePlay.setPosition(window.getSize().x / 2 - menuMessagePlay.getLocalBounds().width / 2,
+		window.getSize().y / 4 - menuMessagePlay.getLocalBounds().height / 2);
+
+	menuMessageOptions.setPosition(window.getSize().x / 2 - menuMessagePlay.getLocalBounds().width / 2,
+		window.getSize().y * 1/2 - menuMessagePlay.getLocalBounds().height / 2);
+
+	menuMessageExit.setPosition(window.getSize().x / 2 - menuMessageExit.getLocalBounds().width / 2,
+		window.getSize().y * 3/4 - menuMessagePlay.getLocalBounds().height / 2);
+
+	
 }
 
 void Game::update(sf::Time deltaTime)
@@ -130,7 +148,9 @@ void Game::draw()
 	switch (currentState)
 	{
 	case Game::Menu:
-		window.draw(menuMessage);
+		window.draw(menuMessagePlay);
+		window.draw(menuMessageOptions);
+		window.draw(menuMessageExit);
 		break;
 	case Game::InGame:
 		window.draw(maze);
@@ -236,9 +256,46 @@ void Game::manageMenuEvents()
 	sf::Event event;
 	while (window.pollEvent(event))
 	{
-		if (event.type == sf::Event::KeyPressed)
-			nextState = Game::InGame;
-		if (event.type == sf::Event::Closed)
-			window.close();
+		//Play
+		if (sf::Mouse::getPosition(window).x > window.getSize().x * 1 / 2 - menuMessagePlay.getLocalBounds().width / 2 && sf::Mouse::getPosition(window).x < window.getSize().x * 1 / 2 + menuMessagePlay.getLocalBounds().width / 2 && sf::Mouse::getPosition(window).y > window.getSize().y *1/4 - menuMessagePlay.getLocalBounds().height / 2 && sf::Mouse::getPosition(window).y < window.getSize().y * 1/4 + menuMessagePlay.getLocalBounds().height / 2 == true){
+			menuMessagePlay.setColor(sf::Color::Red);
+		}
+		else {
+			menuMessagePlay.setColor(sf::Color::White);
+		}
+		if (event.type == event.MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left){
+			if (sf::Mouse::getPosition(window).y > window.getSize().y / 4 - menuMessagePlay.getLocalBounds().height / 2 && sf::Mouse::getPosition(window).y < window.getSize().y * 1 / 2 - menuMessagePlay.getLocalBounds().height / 2){
+				
+				nextState = Game::InGame;
+			}
+		}
+
+		//Options
+		if (sf::Mouse::getPosition(window).x > window.getSize().x * 1 / 2 - menuMessageOptions.getLocalBounds().width / 2 && sf::Mouse::getPosition(window).x < window.getSize().x * 1 / 2 + menuMessageOptions.getLocalBounds().width / 2 && sf::Mouse::getPosition(window).y > window.getSize().y *1/2 - menuMessageOptions.getLocalBounds().height *1/2 && sf::Mouse::getPosition(window).y < window.getSize().y * 1 / 2 + menuMessageOptions.getLocalBounds().height / 2 == true){
+			menuMessageOptions.setColor(sf::Color::Red);
+		}
+		else {
+			menuMessageOptions.setColor(sf::Color::White);
+		}
+		if (event.type == event.MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left){
+			if (sf::Mouse::getPosition(window).y > window.getSize().y *1/2 - menuMessageOptions.getLocalBounds().height *1/2 && sf::Mouse::getPosition(window).y < window.getSize().y * 1 / 2 + menuMessageOptions.getLocalBounds().height / 2){
+				nextState = Game::InGame;
+			}
+		}
+
+
+		//Close
+		if (sf::Mouse::getPosition(window).x > window.getSize().x * 1 / 2 - menuMessageExit.getLocalBounds().width / 2 && sf::Mouse::getPosition(window).x < window.getSize().x * 1 / 2 + menuMessageExit.getLocalBounds().width / 2 && sf::Mouse::getPosition(window).y > window.getSize().y * 3 / 4 - menuMessageExit.getLocalBounds().height / 2 && sf::Mouse::getPosition(window).y < window.getSize().y * 3 / 4 + menuMessageExit.getLocalBounds().height / 2 == true){
+			menuMessageExit.setColor(sf::Color::Red);
+		}
+		else {
+			menuMessageExit.setColor(sf::Color::White);
+		}
+		if (event.type == event.MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left){
+			if (sf::Mouse::getPosition(window).y > window.getSize().y *3/4 - menuMessageExit.getLocalBounds().height / 2 && sf::Mouse::getPosition(window).y < window.getSize().y * 3 / 4 + menuMessageExit.getLocalBounds().height / 2){
+
+				window.close();
+			}
+		}
 	}
 }

@@ -23,7 +23,9 @@ private:
 
 	//members for menu
 	sf::Font menuFont;
-	sf::Text menuMessage;
+	sf::Text menuMessagePlay;
+	sf::Text menuMessageOptions;
+	sf::Text menuMessageExit;
 
 	//members for victory
 	sf::Color backgroundColor;
